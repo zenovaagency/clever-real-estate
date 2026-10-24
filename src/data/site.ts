@@ -1,7 +1,7 @@
 export const site = {
   name: "Clever Real Estate",
   shortName: "Clever",
-  tagline: "Top local agents. Half the listing fee.",
+  tagline: "The finest local agents. Half the commission.",
   description:
     "Clever matches home buyers and sellers with top local agents from trusted brands. Sell for a 1.5% listing fee, get cash back when you buy — free, with no obligation.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://clever.zenova.agency",
