@@ -1,0 +1,303 @@
+@import "tailwindcss";
+
+/* ───────────────────────── Design tokens ─────────────────────────
+   Light editorial luxury: warm paper, near-black ink, stone panels,
+   hairline rules and a single deep evergreen accent. */
+@theme {
+  --color-paper: #faf8f4;
+  --color-stone: #f1ede6;
+  --color-sand: #e7e0d4;
+  --color-ink: #15140f;
+  --color-ink-soft: #57524a;
+  --color-forest: #1f3b32;
+  --color-forest-deep: #162c25;
+  --color-sage: #e3e9e4;
+  --color-bronze: #8c6d46;
+  --color-danger: #9b2c1f;
+
+  --font-serif: var(--font-bodoni), "Didot", "Times New Roman", serif;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: var(--color-paper);
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-forest);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 1.5px solid var(--color-forest);
+    outline-offset: 4px;
+  }
+
+  img,
+  video {
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* ───────────────────────── Type system ───────────────────────── */
+@utility font-display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-optical-sizing: auto;
+  letter-spacing: -0.015em;
+  line-height: 1;
+}
+
+@utility text-hero {
+  font-size: clamp(3rem, 6.6vw, 6.6rem);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+}
+
+@utility text-display {
+  font-size: clamp(2.6rem, 5vw, 4.75rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+@utility text-headline {
+  font-size: clamp(2.1rem, 3.5vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+@utility text-title {
+  font-size: clamp(1.45rem, 1.9vw, 1.85rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+@utility text-lede {
+  font-size: clamp(1.0625rem, 1.3vw, 1.25rem);
+  line-height: 1.65;
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+/* ───────────────────────── Layout ───────────────────────── */
+@utility container-x {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4.5vw, 4rem);
+  max-width: 90rem;
+}
+
+@utility section-y {
+  padding-block: clamp(5.5rem, 11vw, 10rem);
+}
+
+@utility hairline {
+  height: 1px;
+  background: currentColor;
+  opacity: 0.14;
+}
+
+/* Underline that draws from the left on hover */
+.link-line {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.7s var(--ease-expo);
+}
+.link-line:hover,
+.link-line:focus-visible,
+.link-line[aria-current="page"] {
+  background-size: 100% 1px;
+}
+
+/* Elements revealed by GSAP start hidden only once JS has booted,
+   so content is never lost if scripts fail. */
+.js [data-reveal=""],
+.js [data-reveal="stagger"] > * {
+  opacity: 0;
+}
+.js [data-split] {
+  visibility: hidden;
+}
+.split-mask {
+  padding: 0 0.06em 0.12em;
+  margin: 0 -0.06em -0.12em;
+}
+
+/* ───────────────────────── Keyframes ───────────────────────── */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Masthead reveal for pages — pure CSS so it begins before hydration (LCP). */
+/* Starts at a near-invisible 0.01 rather than 0: Chrome never counts fully
+   transparent text as Largest Contentful Paint, even after it fades in. */
+@keyframes rise {
+  from {
+    opacity: 0.01;
+    transform: translateY(28px);
+  }
+}
+.rise {
+  animation: rise 1.4s var(--ease-expo) 0.1s both;
+}
+.rise-2 {
+  animation: rise 1.4s var(--ease-expo) 0.25s both;
+}
+.rise-3 {
+  animation: rise 1.4s var(--ease-expo) 0.4s both;
+}
+
+/* A stone panel lifts off the photograph. The image itself is painted from the
+   first frame (a clip-path reveal would hold back Largest Contentful Paint). */
+@keyframes curtain {
+  to {
+    transform: scaleY(0);
+  }
+}
+.curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--color-stone);
+  transform-origin: top;
+  animation: curtain 1.5s var(--ease-quart) 0.15s both;
+}
+
+@keyframes settle {
+  from {
+    transform: scale(1.12);
+  }
+}
+.settle {
+  animation: settle 2.8s var(--ease-expo) 0.2s both;
+}
+
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+}
+
+@keyframes progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Range slider: hairline track with a fine forest knob */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--color-forest) 0%,
+    var(--color-forest) var(--fill, 50%),
+    rgb(21 20 15 / 0.15) var(--fill, 50%)
+  );
+  cursor: pointer;
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--color-paper);
+  border: 1.5px solid var(--color-forest);
+  box-shadow: 0 0 0 5px var(--color-paper);
+  transition: transform 0.4s var(--ease-expo);
+}
+.range:active::-webkit-slider-thumb {
+  transform: scale(1.2);
+}
+.range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--color-paper);
+  border: 1.5px solid var(--color-forest);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ───────────────────────── Reduced motion ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js [data-reveal=""],
+  .js [data-reveal="stagger"] > * {
+    opacity: 1;
+  }
+  .js [data-split] {
+    visibility: visible;
+  }
+  .animate-marquee {
+    animation: none;
+  }
+}
